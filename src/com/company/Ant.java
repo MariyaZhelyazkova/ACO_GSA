@@ -6,28 +6,28 @@ public class Ant {
     private final static String AMINO_ACID_ORDER = "ABCDEFGHIKLMNPQRSTVWXYZ";
     private final static int[] blosum62mt2 = {
             8,
-            -4,  8,
+            -4, 8,
             0, -6, 18,
-            -4,  8, -6, 12,
-            -2,  2, -8,  4, 10,
+            -4, 8, -6, 12,
+            -2, 2, -8, 4, 10,
             -4, -6, -4, -6, -6, 12,
             0, -2, -6, -2, -4, -6, 12,
-            -4,  0, -6, -2,  0, -2, -4, 16,
-            -2, -6, -2, -6, -6,  0, -8, -6,  8,
-            -2,  0, -6, -2,  2, -6, -4, -2, -6, 10,
-            -2, -8, -2, -8, -6,  0, -8, -6,  4, -4,  8,
-            -2, -6, -2, -6, -4,  0, -6, -4,  2, -2,  4, 10,
-            -4,  6, -6,  2,  0, -6,  0,  2, -6,  0, -6, -4, 12,
+            -4, 0, -6, -2, 0, -2, -4, 16,
+            -2, -6, -2, -6, -6, 0, -8, -6, 8,
+            -2, 0, -6, -2, 2, -6, -4, -2, -6, 10,
+            -2, -8, -2, -8, -6, 0, -8, -6, 4, -4, 8,
+            -2, -6, -2, -6, -4, 0, -6, -4, 2, -2, 4, 10,
+            -4, 6, -6, 2, 0, -6, 0, 2, -6, 0, -6, -4, 12,
             -2, -4, -6, -2, -2, -8, -4, -4, -6, -2, -6, -4, -4, 14,
-            -2,  0, -6,  0,  4, -6, -4,  0, -6,  2, -4,  0,  0, -2, 10,
-            -2, -2, -6, -4,  0, -6, -4,  0, -6,  4, -4, -2,  0, -4,  2, 10,
-            2,  0, -2,  0,  0, -4,  0, -2, -4,  0, -4, -2,  2, -2,  0, -2,  8,
-            0, -2, -2, -2, -2, -4, -4, -4, -2, -2, -2, -2,  0, -2, -2, -2,  2, 10,
-            0, -6, -2, -6, -4, -2, -6, -6,  6, -4,  2,  2, -6, -4, -4, -6, -4,  0,  8,
-            -6, -8, -4, -8, -6,  2, -4, -4, -6, -6, -4, -2, -8, -8, -4, -6, -6, -4, -6, 22,
-            0, -2, -4, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -4, -2, -2,  0,  0, -2, -4, -2,
-            -4, -6, -4, -6, -4,  6, -6,  4, -2, -4, -2, -2, -4, -6, -2, -4, -4, -4, -2,  4, -2, 14,
-            -2,  2, -6,  2,  8, -6, -4,  0, -6,  2, -6, -2,  0, -2,  6,  0,  0, -2, -4, -6, -2, -4,  8};
+            -2, 0, -6, 0, 4, -6, -4, 0, -6, 2, -4, 0, 0, -2, 10,
+            -2, -2, -6, -4, 0, -6, -4, 0, -6, 4, -4, -2, 0, -4, 2, 10,
+            2, 0, -2, 0, 0, -4, 0, -2, -4, 0, -4, -2, 2, -2, 0, -2, 8,
+            0, -2, -2, -2, -2, -4, -4, -4, -2, -2, -2, -2, 0, -2, -2, -2, 2, 10,
+            0, -6, -2, -6, -4, -2, -6, -6, 6, -4, 2, 2, -6, -4, -4, -6, -4, 0, 8,
+            -6, -8, -4, -8, -6, 2, -4, -4, -6, -6, -4, -2, -8, -8, -4, -6, -6, -4, -6, 22,
+            0, -2, -4, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -4, -2, -2, 0, 0, -2, -4, -2,
+            -4, -6, -4, -6, -4, 6, -6, 4, -2, -4, -2, -2, -4, -6, -2, -4, -4, -4, -2, 4, -2, 14,
+            -2, 2, -6, 2, 8, -6, -4, 0, -6, 2, -6, -2, 0, -2, 6, 0, 0, -2, -4, -6, -2, -4, 8};
 
     private AntPath antPath;
     private AntMap antMap = new AntMap();
@@ -80,7 +80,7 @@ public class Ant {
     private char[] alignSequence(int i) throws Exception {
         char[] data;
         int datalength;
-        char[] alignment = new char[alignLength - 1];
+        char[] alignment = new char[alignLength];
         int gaps, ai;
         int idx, gapIndex;
 
@@ -89,24 +89,25 @@ public class Ant {
         gaps = alignLength - datalength;
         ai = 0;
 
+        idx = pathIndex;
         for (int j = 0; j < datalength; j++) {
-            idx = pathIndex;
             for (gapIndex = 0; gapIndex < gaps; gapIndex++) {
                 if (antPath.getValueAt(idx) == j) {
                     alignment[ai] = '-';
                     ai++;
                 }
-                alignment[ai] = data[j];
-                ai++;
-                pathIndex++;
             }
 
-            idx = pathIndex;
-            for (gapIndex = 0; gapIndex < gaps; gapIndex++) {
-                if (antPath.getValueAt(idx) >= datalength) {
-                    alignment[ai] = '-';
-                    ai++;
-                }
+            alignment[ai] = data[j];
+            ai++;
+            idx++;
+        }
+
+        idx = pathIndex;
+        for (gapIndex = 0; gapIndex < gaps; gapIndex++) {
+            if (antPath.getValueAt(idx) >= datalength) {
+                alignment[ai] = '-';
+                ai++;
             }
         }
 
@@ -141,7 +142,7 @@ public class Ant {
         return 0;
     }
 
-    private Symbol evaluateSymbol(char a){
+    private Symbol evaluateSymbol(char a) {
         if (a == '-')
             return new Symbol(-5, 0);
 
@@ -152,10 +153,10 @@ public class Ant {
         int score = 0;
         int seqCount = alignedList.getSequenceCount();
         int maxPos, minPos;
-        int matrixIndex =0;
+        int matrixIndex = 0;
         Symbol symbolA, symbolB;
 
-        for (int i = 0; i < seqCount -1; i++) {
+        for (int i = 0; i < seqCount - 1; i++) {
             symbolA = evaluateSymbol(alignedList.getSequence(i).getData()[columnIndex]);
             score += symbolA.getScore();
             if (symbolA.getScore() < 0)
@@ -164,12 +165,12 @@ public class Ant {
             for (int j = 0; j < seqCount; j++) {
                 symbolB = evaluateSymbol(alignedList.getSequence(j).getData()[columnIndex]);
                 score += symbolB.getScore();
-                if (symbolB.getScore() == 0 )
+                if (symbolB.getScore() == 0)
                     continue;
 
                 maxPos = Math.max(symbolA.getPosition(), symbolB.getPosition());
                 minPos = Math.min(symbolA.getPosition(), symbolB.getPosition());
-                matrixIndex = (int)(((maxPos + 1) / 2.0) * (maxPos)) + minPos;
+                matrixIndex = (int) (((maxPos + 1) / 2.0) * (maxPos)) + minPos;
             }
 
             score += blosum62mt2[matrixIndex];
@@ -181,8 +182,7 @@ public class Ant {
     private int evaluateAlignment() throws Exception {
         int score = 0;
         int colScore;
-        for(int i = 0; i < alignLength; i++)
-        {
+        for (int i = 0; i < alignLength; i++) {
             colScore = columnScore(i);
             score += colScore;
         }
@@ -206,8 +206,7 @@ public class Ant {
         }
         constructAlignment();
         evaluateAlignment();
-        if ( alignedList.getScore() > bestList.getScore())
-        {
+        if (alignedList.getScore() > bestList.getScore()) {
             bestList = alignedList;
             antPath.setWeight(10);
             antMap.addPAth(antPath);

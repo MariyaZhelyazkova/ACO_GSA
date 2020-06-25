@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Arrays;
+
 public class Sequence {
     private static final int ROW_LENGTH = 100;
 
@@ -46,5 +48,12 @@ public class Sequence {
 
     public int getDataSize() {
         return dataSize;
+    }
+
+    @Override
+    public String toString() {
+        return "Sequence{" +
+                "data=" + Arrays.toString(data) +
+                '}';
     }
 }

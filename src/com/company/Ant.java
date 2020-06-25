@@ -62,14 +62,14 @@ public class Ant {
     }
 
     private void constructAlignment() throws Exception {
-        Sequence sequence = new Sequence();
+
         pathIndex = 0;
         char[] alignment;
 
         alignedList.clear();
-        ;
 
         for (int i = 0; i < sourceSequenceList.getSequenceCount(); i++) {
+            Sequence sequence = new Sequence();
             alignment = alignSequence(i);
             sequence.setData(alignment);
             alignedList.addSequence(sequence);
@@ -82,7 +82,7 @@ public class Ant {
         int datalength;
         char[] alignment = new char[alignLength];
         int gaps, ai;
-        int idx, gapIndex;
+        int idx;
 
         data = sourceSequenceList.getSequence(i).getData();
         datalength = sourceSequenceList.getSequence(i).getDataLength();
@@ -91,7 +91,7 @@ public class Ant {
 
         idx = pathIndex;
         for (int j = 0; j < datalength; j++) {
-            for (gapIndex = 0; gapIndex < gaps; gapIndex++) {
+            for (int gapIndex = 0; gapIndex < gaps; gapIndex++) {
                 if (antPath.getValueAt(idx) == j) {
                     alignment[ai] = '-';
                     ai++;
@@ -104,7 +104,7 @@ public class Ant {
         }
 
         idx = pathIndex;
-        for (gapIndex = 0; gapIndex < gaps; gapIndex++) {
+        for (int gapIndex = 0; gapIndex < gaps; gapIndex++) {
             if (antPath.getValueAt(idx) >= datalength) {
                 alignment[ai] = '-';
                 ai++;

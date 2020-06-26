@@ -1,13 +1,25 @@
 package com.company;
 
+import com.company.core.*;
+import com.company.io.FastaReader;
+import com.company.io.exceptions.FastaReaderException;
+
 public class Main {
 
     public static void main(String[] args) {
         SequenceList sequenceList = new SequenceList();
 
-        sequenceList.addSequence(new Sequence("GKGDPKKPRGKMDDYAFFVQTSREEHKKKHPDSSVNSEFSKKCSERWKTMSAKEKGKFEDMAKADKARYEREMKTYIPPKGE"));
-        sequenceList.addSequence(new Sequence("MQDRVKRPMNAFIVWSRDRRKMALENNPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQMHREKYPNYKYRPRRKAKMLPK"));
-        sequenceList.addSequence(new Sequence("MKKLKKHPDDEPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQEFERNLARFREDHPDLIQNAKK"));
+        FastaReader reader = new FastaReader();
+
+        try {
+            sequenceList.addSequence(reader.read("1.txt"));
+            sequenceList.addSequence(reader.read("2.txt"));
+            sequenceList.addSequence(reader.read("3.txt"));
+            sequenceList.addSequence(reader.read("4.txt"));
+        } catch (FastaReaderException e) {
+            e.printStackTrace();
+            return;
+        }
 
         AntMap antMap = new AntMap();
 

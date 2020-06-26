@@ -1,4 +1,4 @@
-package com.company;
+package com.company.core;
 
 import java.util.List;
 import java.util.Vector;
@@ -50,7 +50,7 @@ public class SequenceList {
         StringBuilder builder = new StringBuilder();
 
         for (Sequence sequence : sequenceList) {
-            builder.append(sequence.getData());
+            builder.append(sequence.getSequence());
             builder.append('\n');
         }
 

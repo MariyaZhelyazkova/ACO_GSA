@@ -1,4 +1,4 @@
-package com.company;
+package com.company.core;
 
 public class AlignedList extends SequenceList {
     private long score = Long.MIN_VALUE;

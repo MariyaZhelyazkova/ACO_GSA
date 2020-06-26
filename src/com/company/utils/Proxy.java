@@ -1,4 +1,4 @@
-package com.company;
+package com.company.utils;
 
 public class Proxy<T> {
     private T value;

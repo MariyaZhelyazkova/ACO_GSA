@@ -1,59 +1,51 @@
 package com.company;
 
-import java.util.Arrays;
-
 public class Sequence {
-    private static final int ROW_LENGTH = 100;
+    private String header;
+    private String comment;
+    private String data;
 
-    private char[] header;
-    private char[] data;
-    private char[] comment;
-    private int dataLength = 0;
-    private int dataSize = 0;
-
-    public Sequence() {
-        this.header = new char[ROW_LENGTH];
-        this.comment = new char[ROW_LENGTH];
+    public Sequence(String data) {
+        this.data = data;
     }
 
-    public int getDataLength() {
-        return dataLength;
+    public Sequence(Sequence sequence)
+    {
+        header = sequence.header;
+        comment = sequence.comment;
+        data = sequence.data;
     }
 
-    public char[] getHeader() {
+    public int getLength() {
+        return data.length();
+    }
+
+    public String getHeader() {
         return header;
     }
 
-    public void setHeader(char[] header) {
+    public void setHeader(String header) {
         this.header = header;
     }
 
-    public char[] getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(char[] data) {
+    public void setData(String data) {
         this.data = data;
-        this.dataSize = data.length;
-        this.dataLength = this.dataSize;
     }
 
-    public char[] getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public void setComment(char[] comment) {
+    public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public int getDataSize() {
-        return dataSize;
     }
 
     @Override
     public String toString() {
-        return "Sequence{" +
-                "data=" + Arrays.toString(data) +
-                '}';
+        return  data;
     }
 }

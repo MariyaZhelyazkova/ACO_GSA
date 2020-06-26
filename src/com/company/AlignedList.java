@@ -1,13 +1,27 @@
 package com.company;
 
 public class AlignedList extends SequenceList {
-    private int score = 0;
+    private long score = Long.MIN_VALUE;
 
-    public int getScore() {
+    public void assign(AlignedList other) {
+        if (this == other) {
+            return;
+        }
+
+        clear();
+
+        score = other.getScore();
+
+        for (int i = 0; i < other.getCount(); i++) {
+            addSequence(other.getSequence(i));
+        }
+    }
+
+    public long getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(long score) {
         this.score = score;
     }
 }

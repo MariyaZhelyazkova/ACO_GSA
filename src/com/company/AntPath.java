@@ -1,23 +1,23 @@
 package com.company;
 
+import java.util.Vector;
+
 public class AntPath {
-    private int[] path;
-    private int pathLength;
-    private int weight;
+    private final Vector<Integer> path;
+    private int weight = 1;
 
     public AntPath(int pathLength) {
-        this.pathLength = pathLength;
-        path = new int[pathLength];
-        weight = 1;
+        path = new Vector<>(pathLength);
+        path.setSize(pathLength);
     }
 
-    public int getPathLength() {
-        return pathLength;
+    public AntPath(AntPath other) {
+        path = new Vector<>(other.path);
+        weight = other.weight;
     }
 
-    public void setPathLength(int pathLength) {
-        path = new int[pathLength];
-        this.pathLength = pathLength;
+    public int getLength() {
+        return path.size();
     }
 
     public int getWeight() {
@@ -25,20 +25,17 @@ public class AntPath {
     }
 
     public void setWeight(int weight) {
-        if (weight > 0)
-            this.weight = weight;
-        else
+        this.weight = weight;
+
+        if (weight <= 0)
             this.weight = 1;
     }
 
-    public int getValueAt(int pos) throws Exception {
-        if (pos < 0 || pos > pathLength)
-            throw new Exception("Out of bounds");
-
-        return path[pos];
+    public int getValueAt(int pos) {
+        return path.get(pos);
     }
 
     public void setValueAt(int pos, int value) {
-
+        path.set(pos, value);
     }
 }

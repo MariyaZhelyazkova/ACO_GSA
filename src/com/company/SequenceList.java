@@ -4,53 +4,56 @@ import java.util.List;
 import java.util.Vector;
 
 public class SequenceList {
-    private List<Sequence> sequenceList = new Vector<>();
-
-    @Override
-    public String toString() {
-        return "SequenceList{" +
-                "sequenceList=" + sequenceList +
-                '}';
-    }
+    private final List<Sequence> sequenceList = new Vector<>(20);
 
     public void addSequence(Sequence sequence) {
-        this.sequenceList.add(sequence);
+        this.sequenceList.add(new Sequence(sequence));
     }
 
-    public Sequence getSequence(int i) throws Exception {
-        if (i < 0 || i >= sequenceList.size())
-            throw new Exception("Out Of Bounds");
+    public Sequence getSequence(int i) {
         return sequenceList.get(i);
     }
 
-    public int getSequenceCount(){
+    public int getCount() {
         return sequenceList.size();
     }
 
     public int maxSequenceLength() {
         int maxLength = 0;
 
-        for (Sequence s : sequenceList){
-            if(s.getDataLength() > maxLength)
-                maxLength = s.getDataLength();
+        for (Sequence sequence : sequenceList) {
+            int length = sequence.getLength();
+
+            if (length > maxLength)
+                maxLength = length;
         }
 
         return maxLength;
     }
 
-    public int missingGapsToLength(int seqLength) throws Exception {
-        if (seqLength > maxSequenceLength())
-            throw new Exception("Out of Bounds");
-
+    public int missingGapsToLength(int sequenceLength) {
         int sum = 0;
-        for (Sequence s : sequenceList){
-            sum += seqLength - s.getDataLength();
+
+        for (Sequence sequence : sequenceList) {
+            sum += sequenceLength - sequence.getLength();
         }
 
         return sum;
     }
 
-    public void clear(){
+    public void clear() {
         sequenceList.clear();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        for (Sequence sequence : sequenceList) {
+            builder.append(sequence.getData());
+            builder.append('\n');
+        }
+
+        return builder.toString();
     }
 }

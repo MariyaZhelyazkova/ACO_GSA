@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Ant {
@@ -29,115 +30,103 @@ public class Ant {
             -4, -6, -4, -6, -4, 6, -6, 4, -2, -4, -2, -2, -4, -6, -2, -4, -4, -4, -2, 4, -2, 14,
             -2, 2, -6, 2, 8, -6, -4, 0, -6, 2, -6, -2, 0, -2, 6, 0, 0, -2, -4, -6, -2, -4, 8};
 
-    private AntPath antPath;
-    private AntMap antMap = new AntMap();
-    private int alignLength;
-    private SequenceList sourceSequenceList;
-    private AlignedList alignedList = new AlignedList();
-    private AlignedList bestList;
-    private int pathIndex = 0;
-    private Random random = new Random();
+    private final AntPath antPath;
+    private final AntMap antMap;
+    private final int alignLength;
+    private final SequenceList sourceSequenceList;
 
-    public Ant(SequenceList sourceSequenceList) throws Exception {
+    private final AlignedList alignedList = new AlignedList();
+
+    private final AlignedList bestList = new AlignedList();
+
+    public Ant(SequenceList sourceSequenceList, AntMap antMap) {
         this.sourceSequenceList = sourceSequenceList;
         this.alignLength = sourceSequenceList.maxSequenceLength();
         this.antPath = new AntPath(sourceSequenceList.missingGapsToLength(alignLength));
-        this.bestList = alignedList;
-    }
-
-    public AntPath getAntPath() {
-        return antPath;
-    }
-
-    public AntMap getAntMap() {
-        return antMap;
-    }
-
-    public AlignedList getAlignedList() {
-        return alignedList;
+        this.antMap = antMap;
     }
 
     public AlignedList getBestList() {
         return bestList;
     }
 
-    private void constructAlignment() throws Exception {
-        pathIndex = 0;
-        char[] alignment;
-
+    private void constructAlignment() {
         alignedList.clear();
 
-        for (int i = 0; i < sourceSequenceList.getSequenceCount(); i++) {
-            Sequence sequence = new Sequence();
-            alignment = alignSequence(i);
-            sequence.setData(alignment);
-            alignedList.addSequence(sequence);
-        }
+        Proxy<Integer> pathIndex = new Proxy<>(0);
 
+        for (int i = 0; i < sourceSequenceList.getCount(); i++) {
+            alignedList.addSequence(alignSequence(i, pathIndex));
+        }
     }
 
-    private char[] alignSequence(int i) throws Exception {
-        char[] data;
-        int datalength;
-        char[] alignment = new char[alignLength];
-        int gaps, ai;
-        int idx;
+    private Sequence alignSequence(int i, Proxy<Integer> pathIndex) {
+        StringBuilder alignment = new StringBuilder(alignLength);
+        alignment.append(" ".repeat(alignLength));
 
-        data = sourceSequenceList.getSequence(i).getData();
-        datalength = sourceSequenceList.getSequence(i).getDataLength();
-        gaps = alignLength - datalength;
-        ai = 0;
+        String data = sourceSequenceList.getSequence(i).getData();
+        int dataLength = data.length();
 
-        idx = pathIndex;
-        for (int j = 0; j < datalength; j++) {
-            for (int gapIndex = 0; gapIndex < gaps; gapIndex++) {
+        int gaps = alignLength - dataLength;
+        int alignmentIndex = 0;
+
+
+        for (int j = 0; j < dataLength; j++) {
+            int idx = pathIndex.getValue();
+
+            for (int gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
                 if (antPath.getValueAt(idx) == j) {
-                    alignment[ai] = '-';
-                    ai++;
-                    idx++;
+                    alignment.setCharAt(alignmentIndex, '-');
+                    alignmentIndex++;
                 }
             }
 
-            alignment[ai] = data[j];
-            ai++;
+            alignment.setCharAt(alignmentIndex, data.charAt(j));
+            alignmentIndex++;
         }
 
-        idx = pathIndex;
-        for (int gapIndex = 0; gapIndex < gaps; gapIndex++) {
-            if (antPath.getValueAt(idx) >= datalength) {
-                alignment[ai] = '-';
-                ai++;
+        int idx = pathIndex.getValue();
+
+        for (int gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
+            if (antPath.getValueAt(idx) >= dataLength) {
+                alignment.setCharAt(alignmentIndex, '-');
+                alignmentIndex++;
             }
         }
-        if (gaps != 0)
-            pathIndex += gaps -1;
-        return alignment;
+
+        pathIndex.setValue(pathIndex.getValue() + gaps);
+
+        return new Sequence(alignment.toString());
     }
 
-    private int pickMove(int step) throws Exception {
-        int numPaths = antMap.getMapSize();
+    private int pickMove(int step) {
+        int totalWeight = alignLength;
+
         int[] stepWeight = new int[alignLength];
-        int totalWeight = 0;
-        int pathWeight, stepIndex;
+        Arrays.fill(stepWeight, 1);
 
-        for (int i = 0; i < alignLength; i++) {
-            totalWeight += stepWeight[i];
-        }
+        for (int i = 0; i < antMap.getSize(); i++) {
+            final AntPath antPath = antMap.getPath(i);
 
-        for (int i = 0; i < numPaths; i++) {
-            stepIndex = antMap.getAntPath(i).getValueAt(step);
-            pathWeight = antMap.getAntPath(i).getWeight();
+            int stepIndex = antPath.getValueAt(step);
+            int pathWeight = antPath.getWeight();
+
             stepWeight[stepIndex] += pathWeight;
             totalWeight += pathWeight;
         }
 
-        int rand = random.nextInt() % (totalWeight + 1);
+        Random random = new Random();
+        int rand = random.nextInt(totalWeight);
+
         int stopSum = 0;
+
         for (int i = 0; i < alignLength; i++) {
             stopSum += stepWeight[i];
+
             if (stopSum >= rand)
                 return i;
         }
+
         return 0;
     }
 
@@ -148,27 +137,33 @@ public class Ant {
         return new Symbol(0, AMINO_ACID_ORDER.indexOf(a));
     }
 
-    private int columnScore(int columnIndex) throws Exception {
+    private int columnScore(int columnIndex) {
         int score = 0;
-        int seqCount = alignedList.getSequenceCount();
-        int maxPos, minPos;
-        int matrixIndex = 0;
-        Symbol symbolA, symbolB;
+        int seqCount = alignedList.getCount();
 
         for (int i = 0; i < seqCount - 1; i++) {
-            symbolA = evaluateSymbol(alignedList.getSequence(i).getData()[columnIndex]);
+            Symbol symbolA =
+                    evaluateSymbol(alignedList.getSequence(i).getData().charAt(columnIndex));
+
             score += symbolA.getScore();
+
             if (symbolA.getScore() < 0)
                 continue;
 
-            for (int j = 0; j < seqCount; j++) {
-                symbolB = evaluateSymbol(alignedList.getSequence(j).getData()[columnIndex]);
+            int matrixIndex = 0;
+
+            for (int j = i; j < seqCount; j++) {
+                Symbol symbolB =
+                        evaluateSymbol(alignedList.getSequence(j).getData().charAt(columnIndex));
+
                 score += symbolB.getScore();
-                if (symbolB.getScore() == 0)
+
+                if (symbolB.getScore() < 0)
                     continue;
 
-                maxPos = Math.max(symbolA.getPosition(), symbolB.getPosition());
-                minPos = Math.min(symbolA.getPosition(), symbolB.getPosition());
+                int maxPos = Math.max(symbolA.getPosition(), symbolB.getPosition());
+                int minPos = Math.min(symbolA.getPosition(), symbolB.getPosition());
+
                 matrixIndex = (int) (((maxPos + 1) / 2.0) * (maxPos)) + minPos;
             }
 
@@ -178,38 +173,37 @@ public class Ant {
         return score;
     }
 
-    private int evaluateAlignment() throws Exception {
+    private int evaluateAlignmentScore() {
         int score = 0;
-        int colScore;
+
         for (int i = 0; i < alignLength; i++) {
-            colScore = columnScore(i);
-            score += colScore;
+            score += columnScore(i);
         }
 
-        alignedList.setScore(score);
         return score;
     }
 
-    public void go() throws Exception {
-        int seqDiff;
-        int sourceLenght;
+    public void go() {
         int step = 0;
-        int move;
-        for (int i = 0; i < sourceSequenceList.getSequenceCount(); i++) {
-            sourceLenght = sourceSequenceList.getSequence(i).getDataLength();
-            seqDiff = alignLength - sourceLenght;
+
+        for (int i = 0; i < sourceSequenceList.getCount(); i++) {
+            int sourceLength = sourceSequenceList.getSequence(i).getLength();
+            int seqDiff = alignLength - sourceLength;
+
             for (int j = 0; j < seqDiff; j++, step++) {
-                move = pickMove(step);
+                int move = pickMove(step);
                 antPath.setValueAt(step, move);
             }
         }
 
         constructAlignment();
-        evaluateAlignment();
+
+        alignedList.setScore(evaluateAlignmentScore());
+
         if (alignedList.getScore() > bestList.getScore()) {
-            bestList = alignedList;
+            bestList.assign(alignedList);
             antPath.setWeight(10);
-            antMap.addPAth(antPath);
+            antMap.addPath(antPath);
         }
     }
 

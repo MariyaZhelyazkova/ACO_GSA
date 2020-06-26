@@ -4,27 +4,21 @@ import java.util.List;
 import java.util.Vector;
 
 public class AntMap {
-    List<AntPath> map = new Vector<>();
+    List<AntPath> map = new Vector<>(100);
 
-    public void addPAth(AntPath antPath) {
-        map.add(antPath);
+    public void addPath(AntPath antPath) {
+        map.add(new AntPath(antPath));
     }
 
-    public AntPath getAntPath(int i) throws Exception {
-        if (i < 0 || i >= map.size())
-            throw new Exception("Out of bounds");
-
+    public AntPath getPath(int i) {
         return map.get(i);
     }
 
-    public int getScoreOfPath(int i) throws Exception {
-        if (i < 0 || i >= map.size())
-            throw new Exception("Out of bounds");
-
+    public int getScoreOfPath(int i) {
         return map.get(i).getWeight();
     }
 
-    public int getMapSize(){
+    public int getSize(){
         return map.size();
     }
 }

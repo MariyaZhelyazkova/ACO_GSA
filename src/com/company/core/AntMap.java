@@ -6,19 +6,19 @@ import java.util.Vector;
 public class AntMap {
     List<AntPath> map = new Vector<>(100);
 
-    public void addPath(AntPath antPath) {
+    public synchronized void addPath(AntPath antPath) {
         map.add(new AntPath(antPath));
     }
 
-    public AntPath getPath(int i) {
+    public synchronized AntPath getPath(int i) {
         return map.get(i);
     }
 
-    public int getScoreOfPath(int i) {
+    public synchronized int getScoreOfPath(int i) {
         return map.get(i).getWeight();
     }
 
-    public int getSize(){
+    public synchronized int getSize(){
         return map.size();
     }
 }

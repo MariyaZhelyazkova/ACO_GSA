@@ -16,6 +16,22 @@ public class AntPath {
         weight = other.weight;
     }
 
+    public void findValueInRange(int min, int max, Integer value, Runnable callback) {
+        boolean isOutOfRange = false;
+        int index = -1;
+
+        while (!isOutOfRange) {
+            index = path.indexOf(value, index + 1);
+
+            if (index < min || index > max || index < 0) {
+                isOutOfRange = true;
+                continue;
+            }
+
+            callback.run();
+        }
+    }
+
     public int getLength() {
         return path.size();
     }

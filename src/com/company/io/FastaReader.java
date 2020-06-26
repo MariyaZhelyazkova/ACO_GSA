@@ -16,18 +16,20 @@ public class FastaReader {
         };
 
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-            var firstLine = stream.findFirst();
-
-            if (firstLine.isEmpty())
-                throw new FastaReaderException("Unable to read fasta file. The file is empty.");
-
-            data.header = firstLine.get();
-
-            stream.forEach(line -> data.sequence += line.toUpperCase().trim());
-
+            stream.forEach(line -> {
+                if (data.header == null) {
+                    data.header = line;
+                    data.sequence = "";
+                } else {
+                    data.sequence += line.toUpperCase().trim();
+                }
+            });
         } catch (IOException e) {
             throw new FastaReaderException("Unable to read fasta file.", e);
         }
+
+        if (data.header.isEmpty() || data.sequence.isEmpty())
+            throw new FastaReaderException("Unable to read fasta file. The file may be empty.");
 
         return new Sequence(data.header, data.sequence);
     }

@@ -3,7 +3,7 @@ package com.company.core;
 public class AlignedList extends SequenceList {
     private long score = Long.MIN_VALUE;
 
-    public void assign(AlignedList other) {
+    public synchronized void assign(AlignedList other) {
         if (this == other) {
             return;
         }
@@ -17,11 +17,11 @@ public class AlignedList extends SequenceList {
         }
     }
 
-    public long getScore() {
+    public synchronized long getScore() {
         return score;
     }
 
-    public void setScore(long score) {
+    public synchronized void setScore(long score) {
         this.score = score;
     }
 }

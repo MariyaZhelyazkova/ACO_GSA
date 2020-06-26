@@ -6,16 +6,16 @@ public class Main {
         // write your code here
         SequenceList sequenceList = new SequenceList();
         Sequence sequence = new Sequence();
-        sequence.setData("ABBCAABBCC".toCharArray());
+        sequence.setData("GKGDPKKPRGKMDDYAFFVQTSREEHKKKHPDSSVNSEFSKKCSERWKTMSAKEKGKFEDMAKADKARYEREMKTYIPPKGE".toCharArray());
         sequenceList.addSequence(sequence);
 
         sequence = new Sequence();
-        sequence.setData("ABCAABBBCA".toCharArray());
+        sequence.setData("MQDRVKRPMNAFIVWSRDRRKMALENNPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQMHREKYPNYKYRPRRKAKMLPK".toCharArray());
         sequenceList.addSequence(sequence);
 
 
         sequence = new Sequence();
-        sequence.setData("BABCAABBAC".toCharArray());
+        sequence.setData("MKKLKKHPDDEPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQEFERNLARFREDHPDLIQNAKK".toCharArray());
         sequenceList.addSequence(sequence);
 
         Ant ant = new Ant(sequenceList);

@@ -62,7 +62,6 @@ public class Ant {
     }
 
     private void constructAlignment() throws Exception {
-
         pathIndex = 0;
         char[] alignment;
 
@@ -95,12 +94,12 @@ public class Ant {
                 if (antPath.getValueAt(idx) == j) {
                     alignment[ai] = '-';
                     ai++;
+                    idx++;
                 }
             }
 
             alignment[ai] = data[j];
             ai++;
-            idx++;
         }
 
         idx = pathIndex;
@@ -110,8 +109,8 @@ public class Ant {
                 ai++;
             }
         }
-
-        pathIndex += gaps;
+        if (gaps != 0)
+            pathIndex += gaps -1;
         return alignment;
     }
 
@@ -204,6 +203,7 @@ public class Ant {
                 antPath.setValueAt(step, move);
             }
         }
+
         constructAlignment();
         evaluateAlignment();
         if (alignedList.getScore() > bestList.getScore()) {

@@ -9,6 +9,10 @@ public class Sequence {
         this.sequence = sequence;
     }
 
+    public Sequence(String sequence) {
+        this.sequence = sequence;
+    }
+
     public Sequence(Sequence sequence)
     {
         header = sequence.header;

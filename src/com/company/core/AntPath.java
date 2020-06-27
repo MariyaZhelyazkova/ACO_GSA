@@ -16,7 +16,7 @@ public class AntPath {
         weight = other.weight;
     }
 
-    public void findValueInRange(int min, int max, Integer value, Runnable callback) {
+    public void notifyForValuesInRange(int min, int max, Integer value, Runnable callback) {
         var isOutOfRange = false;
         var index = -1;
 

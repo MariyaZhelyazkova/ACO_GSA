@@ -48,7 +48,7 @@ public class Ant {
         var pathIndexValue = pathIndex.getValue();
 
         for (var j = 0; j < dataLength; j++) {
-            antPath.findValueInRange(pathIndexValue, pathIndexValue + gaps - 1, j, () -> {
+            antPath.notifyForValuesInRange(pathIndexValue, pathIndexValue + gaps - 1, j, () -> {
                 alignment[alignmentIndexObject.alignmentIndex] = '-';
                 alignmentIndexObject.alignmentIndex++;
             });

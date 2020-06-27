@@ -6,7 +6,6 @@ import com.company.io.exceptions.FastaReaderException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 public class FastaReader {
     public Sequence read(String fileName) throws FastaReaderException {
@@ -15,7 +14,7 @@ public class FastaReader {
             String sequence;
         };
 
-        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+        try (var stream = Files.lines(Paths.get(fileName))) {
             stream.forEach(line -> {
                 if (data.header == null) {
                     data.header = line;

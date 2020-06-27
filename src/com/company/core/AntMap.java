@@ -14,11 +14,7 @@ public class AntMap {
         return map.get(i);
     }
 
-    public synchronized int getScoreOfPath(int i) {
-        return map.get(i).getWeight();
-    }
-
-    public synchronized int getSize(){
+    public synchronized int getSize() {
         return map.size();
     }
 }

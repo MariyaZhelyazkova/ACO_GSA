@@ -12,7 +12,7 @@ public class AlignedList extends SequenceList {
 
         score = other.getScore();
 
-        for (int i = 0; i < other.getCount(); i++) {
+        for (var i = 0; i < other.getCount(); i++) {
             addSequence(other.getSequence(i));
         }
     }

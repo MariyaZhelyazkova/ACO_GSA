@@ -17,8 +17,8 @@ public class AntPath {
     }
 
     public void findValueInRange(int min, int max, Integer value, Runnable callback) {
-        boolean isOutOfRange = false;
-        int index = -1;
+        var isOutOfRange = false;
+        var index = -1;
 
         while (!isOutOfRange) {
             index = path.indexOf(value, index + 1);
@@ -30,10 +30,6 @@ public class AntPath {
 
             callback.run();
         }
-    }
-
-    public int getLength() {
-        return path.size();
     }
 
     public int getWeight() {

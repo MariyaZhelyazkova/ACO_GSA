@@ -26,22 +26,20 @@ public class Ant {
     private void constructAlignment() {
         alignedList.clear();
 
-        Proxy<Integer> pathIndex = new Proxy<>(0);
+        var pathIndex = new Proxy<>(0);
 
-        for (int i = 0; i < sourceSequenceList.getCount(); i++) {
+        for (var i = 0; i < sourceSequenceList.getCount(); i++) {
             alignedList.addSequence(alignSequence(i, pathIndex));
         }
     }
 
     private Sequence alignSequence(int i, Proxy<Integer> pathIndex) {
         var alignment = new char[alignLength];
-//        StringBuilder alignment = new StringBuilder(alignLength);
-//        alignment.append(" ".repeat(alignLength));
 
-        String data = sourceSequenceList.getSequence(i).getSequence();
-        int dataLength = data.length();
+        var data = sourceSequenceList.getSequence(i).getSequence();
+        var dataLength = data.length();
 
-        int gaps = alignLength - dataLength;
+        var gaps = alignLength - dataLength;
 
         var alignmentIndexObject = new Object() {
             int alignmentIndex = 0;
@@ -49,54 +47,52 @@ public class Ant {
 
         var pathIndexValue = pathIndex.getValue();
 
-        for (int j = 0; j < dataLength; j++) {
+        for (var j = 0; j < dataLength; j++) {
             antPath.findValueInRange(pathIndexValue, pathIndexValue + gaps - 1, j, () -> {
                 alignment[alignmentIndexObject.alignmentIndex] = '-';
-//                alignment.setCharAt(alignmentIndexObject.alignmentIndex, '-');
                 alignmentIndexObject.alignmentIndex++;
             });
 
             alignment[alignmentIndexObject.alignmentIndex] = data.charAt(j);
-//            alignment.setCharAt(alignmentIndexObject.alignmentIndex, data.charAt(j));
             alignmentIndexObject.alignmentIndex++;
         }
 
         var idx = pathIndexValue;
 
-        for (int gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
+        for (var gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
             if (antPath.getValueAt(idx) >= dataLength) {
                 alignment[alignmentIndexObject.alignmentIndex] = '-';
-//                alignment.setCharAt(alignmentIndexObject.alignmentIndex, '-');
                 alignmentIndexObject.alignmentIndex++;
             }
         }
 
         pathIndex.setValue(pathIndex.getValue() + gaps);
+
         return new Sequence(String.valueOf(alignment));
     }
 
     private int pickMove(int step) {
-        int totalWeight = alignLength;
+        var totalWeight = alignLength;
 
-        int[] stepWeight = new int[alignLength];
+        var stepWeight = new int[alignLength];
         Arrays.fill(stepWeight, 1);
 
-        for (int i = 0; i < antMap.getSize(); i++) {
-            final AntPath antPath = antMap.getPath(i);
+        for (var i = 0; i < antMap.getSize(); i++) {
+            final var antPath = antMap.getPath(i);
 
-            int stepIndex = antPath.getValueAt(step);
-            int pathWeight = antPath.getWeight();
+            var stepIndex = antPath.getValueAt(step);
+            var pathWeight = antPath.getWeight();
 
             stepWeight[stepIndex] += pathWeight;
             totalWeight += pathWeight;
         }
 
-        Random random = new Random();
-        int rand = random.nextInt(totalWeight);
+        var random = new Random();
+        var rand = random.nextInt(totalWeight);
 
-        int stopSum = 0;
+        var stopSum = 0;
 
-        for (int i = 0; i < alignLength; i++) {
+        for (var i = 0; i < alignLength; i++) {
             stopSum += stepWeight[i];
 
             if (stopSum >= rand)
@@ -119,11 +115,11 @@ public class Ant {
     }
 
     private int columnScore(int columnIndex) {
-        int score = 0;
-        int seqCount = alignedList.getCount();
+        var score = 0;
+        var seqCount = alignedList.getCount();
 
-        for (int i = 0; i < seqCount - 1; i++) {
-            for (int j = i + 1; j < seqCount; j++) {
+        for (var i = 0; i < seqCount - 1; i++) {
+            for (var j = i + 1; j < seqCount; j++) {
                 score += evaluateSymbol(alignedList.getSequence(i).getSequence().charAt(columnIndex),
                         alignedList.getSequence(j).getSequence().charAt(columnIndex));
             }
@@ -133,9 +129,9 @@ public class Ant {
     }
 
     private int evaluateAlignmentScore() {
-        int score = 0;
+        var score = 0;
 
-        for (int i = 0; i < alignLength; i++) {
+        for (var i = 0; i < alignLength; i++) {
             score += columnScore(i);
         }
 
@@ -143,17 +139,17 @@ public class Ant {
     }
 
     public boolean go(int iterations) {
-        int uselessIterations = 0;
+        var uselessIterations = 0;
 
-        for (int iteration = 0; iteration < iterations; iteration++) {
-            int step = 0;
+        for (var iteration = 0; iteration < iterations; iteration++) {
+            var step = 0;
 
-            for (int i = 0; i < sourceSequenceList.getCount(); i++) {
-                int sourceLength = sourceSequenceList.getSequence(i).getLength();
-                int seqDiff = alignLength - sourceLength;
+            for (var i = 0; i < sourceSequenceList.getCount(); i++) {
+                var sourceLength = sourceSequenceList.getSequence(i).getLength();
+                var seqDiff = alignLength - sourceLength;
 
-                for (int j = 0; j < seqDiff; j++, step++) {
-                    int move = pickMove(step);
+                for (var j = 0; j < seqDiff; j++, step++) {
+                    var move = pickMove(step);
                     antPath.setValueAt(step, move);
                 }
             }

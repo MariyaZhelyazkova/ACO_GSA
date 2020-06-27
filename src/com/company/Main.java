@@ -1,6 +1,9 @@
 package com.company;
 
-import com.company.core.*;
+import com.company.core.AlignedList;
+import com.company.core.Ant;
+import com.company.core.AntMap;
+import com.company.core.SequenceList;
 import com.company.io.FastaReader;
 import com.company.io.exceptions.FastaReaderException;
 
@@ -11,13 +14,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 public class Main {
-    private static final int NUMBER_OF_ITERATIONS = 6000;
+    private static final int NUMBER_OF_ITERATIONS = 1000;
 
 
     public static void main(String[] args) {
-        SequenceList sequenceList = new SequenceList();
+        var sequenceList = new SequenceList();
 
-        FastaReader reader = new FastaReader();
+        var reader = new FastaReader();
 
         try {
             sequenceList.addSequence(reader.read("1.txt"));
@@ -29,6 +32,8 @@ public class Main {
             return;
         }
 
+        var beginTime = System.currentTimeMillis();
+
         var antMap = new AntMap();
         var bestList = new AlignedList();
 
@@ -37,14 +42,14 @@ public class Main {
         var latch = new CountDownLatch(threadCount);
         var executor = Executors.newFixedThreadPool(threadCount);
 
-        Object exitedAfterBreakLockObject = new Object();
-        AtomicBoolean exitedAfterBreak = new AtomicBoolean(false);
+        var exitedAfterBreakLockObject = new Object();
+        var exitedAfterBreak = new AtomicBoolean(false);
 
-        AtomicReference<Exception> thrownException = new AtomicReference<>();
+        var thrownException = new AtomicReference<Exception>();
 
         IntStream.range(0, threadCount).forEach(thread -> executor.submit(() -> {
             try {
-                Ant ant = new Ant(sequenceList, antMap, bestList);
+                var ant = new Ant(sequenceList, antMap, bestList);
 
                 if (ant.go(NUMBER_OF_ITERATIONS)) {
                     synchronized (exitedAfterBreakLockObject) {
@@ -65,11 +70,14 @@ public class Main {
             return;
         }
 
+        var endTime = System.currentTimeMillis();
+
         if (thrownException.get() != null) {
             thrownException.get().printStackTrace();
             return;
         }
 
+        System.out.println("Execution time: " + (endTime - beginTime) * 0.001 + " seconds");
         System.out.println("Exited because of break: " + exitedAfterBreak.get());
         System.out.println("Best Score: " + bestList.getScore());
         System.out.println("Best: \n" + bestList);

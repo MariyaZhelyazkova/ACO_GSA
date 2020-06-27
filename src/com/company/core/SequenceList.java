@@ -19,10 +19,10 @@ public class SequenceList {
     }
 
     public int maxSequenceLength() {
-        int maxLength = 0;
+        var maxLength = 0;
 
-        for (Sequence sequence : sequenceList) {
-            int length = sequence.getLength();
+        for (var sequence : sequenceList) {
+            var length = sequence.getLength();
 
             if (length > maxLength)
                 maxLength = length;
@@ -32,9 +32,9 @@ public class SequenceList {
     }
 
     public int missingGapsToLength(int sequenceLength) {
-        int sum = 0;
+        var sum = 0;
 
-        for (Sequence sequence : sequenceList) {
+        for (var sequence : sequenceList) {
             sum += sequenceLength - sequence.getLength();
         }
 
@@ -47,9 +47,9 @@ public class SequenceList {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
 
-        for (Sequence sequence : sequenceList) {
+        for (var sequence : sequenceList) {
             builder.append(sequence.getSequence());
             builder.append('\n');
         }

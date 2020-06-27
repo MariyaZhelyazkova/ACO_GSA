@@ -13,8 +13,7 @@ public class Sequence {
         this.sequence = sequence;
     }
 
-    public Sequence(Sequence sequence)
-    {
+    public Sequence(Sequence sequence) {
         header = sequence.header;
         this.sequence = sequence.sequence;
     }

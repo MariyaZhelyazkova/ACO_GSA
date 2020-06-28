@@ -138,9 +138,7 @@ public class Ant {
         return score;
     }
 
-    public boolean go(int iterations) {
-        var uselessIterations = 0;
-
+    public void go(int iterations) {
         for (var iteration = 0; iteration < iterations; iteration++) {
             var step = 0;
 
@@ -158,22 +156,11 @@ public class Ant {
 
             alignedList.setScore(evaluateAlignmentScore());
 
-            if (Math.abs(alignedList.getScore() - bestList.getScore()) < 100) {
-                uselessIterations++;
-
-                if (uselessIterations > 20)
-                    return true;
-            } else {
-                uselessIterations = 0;
-            }
-
             if (alignedList.getScore() > bestList.getScore()) {
                 bestList.assign(alignedList);
                 antPath.setWeight(10);
                 antMap.addPath(antPath);
             }
         }
-
-        return false;
     }
 }

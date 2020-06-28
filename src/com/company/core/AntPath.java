@@ -17,6 +17,10 @@ public class AntPath {
     }
 
     public void notifyForValuesInRange(int min, int max, Integer value, Runnable callback) {
+        if (min >= max) {
+            return;
+        }
+
         var isOutOfRange = false;
         var index = -1;
 

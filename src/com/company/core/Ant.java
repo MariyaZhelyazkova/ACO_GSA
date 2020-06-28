@@ -35,6 +35,7 @@ public class Ant {
 
     private Sequence alignSequence(int i, Proxy<Integer> pathIndex) {
         var alignment = new char[alignLength];
+        Arrays.fill(alignment, ' ');
 
         var data = sourceSequenceList.getSequence(i).getSequence();
         var dataLength = data.length();
@@ -45,19 +46,28 @@ public class Ant {
             int alignmentIndex = 0;
         };
 
-        var pathIndexValue = pathIndex.getValue();
+//        var pathIndexValue = pathIndex.getValue();
 
         for (var j = 0; j < dataLength; j++) {
-            antPath.notifyForValuesInRange(pathIndexValue, pathIndexValue + gaps - 1, j, () -> {
-                alignment[alignmentIndexObject.alignmentIndex] = '-';
-                alignmentIndexObject.alignmentIndex++;
-            });
+            int idx = pathIndex.getValue();
+
+            for (int gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
+                if (antPath.getValueAt(idx) == j) {
+                    alignment[alignmentIndexObject.alignmentIndex] = '-';
+                    alignmentIndexObject.alignmentIndex++;
+                }
+            }
+
+//            antPath.notifyForValuesInRange(pathIndexValue, pathIndexValue + gaps - 1, j, () -> {
+//                alignment[alignmentIndexObject.alignmentIndex] = '-';
+//                alignmentIndexObject.alignmentIndex++;
+//            });
 
             alignment[alignmentIndexObject.alignmentIndex] = data.charAt(j);
             alignmentIndexObject.alignmentIndex++;
         }
 
-        var idx = pathIndexValue;
+        var idx = pathIndex.getValue();
 
         for (var gapIndex = 0; gapIndex < gaps; gapIndex++, idx++) {
             if (antPath.getValueAt(idx) >= dataLength) {
